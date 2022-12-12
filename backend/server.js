@@ -3,16 +3,23 @@ const express = require('express')
 
 const dotenv = require(`dotenv`).config()
 
+const colors = require('colors')
+
+const connectDB = require('./config/db')
+
 const {errorHandler} = require('./middleware/errorMiddleware')
 
 // this is the port in which 
 const PORT = process.env.PORT || 5050
 
+// connect to to database:
+connectDB()
+
 // We are calling the express method into a varable. 
 const app = express()
 
 // this is middleware that accepts json files
-app.use(express().json())
+app.use(express.json())
 
 //  this is middleware that accepts form key value pairs
 app.use(express.urlencoded({extened: false}))

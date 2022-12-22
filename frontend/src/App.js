@@ -10,6 +10,8 @@ import Register from './Pages/Register';
 import Header from './Layout/Header';
 import NewTicket from './Pages/New-Ticket/NewTicket';
 import PrivateRoutes from './Pages/New-Ticket/PrivateRoutes';
+import Tickets from './Pages/TicketsFolder/Tickets';
+import Ticket from './Pages/Ticket';
 
 
 function App() {
@@ -22,8 +24,15 @@ function App() {
         <Route path="/login" element={<Login />}/>
         <Route path="/register" element={<Register />}/>
 
+        {/* Protected Routes */}
         <Route path="/new-ticket" element={<PrivateRoutes />}>
         <Route path="/new-ticket" element={<NewTicket />} />
+        </Route>
+        <Route path="/tickets" element={<PrivateRoutes />}>
+        <Route path="/tickets" element={<Tickets />} />
+        </Route>
+        <Route path="/ticket/:ticketId" element={<PrivateRoutes />}>
+        <Route path="/ticket/:ticketId" element={<Ticket />} />
         </Route>
 
       </Routes>

@@ -1,21 +1,46 @@
 import React from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
-import {useEffect} from 'react'
+import {useEffect, useState } from 'react'
 import {uesNavigate} from 'react-router-dom'
 import {getTicket, closeTicket} from '../features/tickets/ticketSlice'
-import {getNotes, reset as notesReset} from '../features/notes/noteSlice'
+import {getNotes, createNote, reset as notesReset} from '../features/notes/noteSlice'
 import BackButton from '../Pages/New-Ticket/BackButton'
 import Spinner from '../Component/Spinner'
 import {toast} from 'react-toastify'
+import Modal from 'react-modal'
 import NoteItem from '../Component/NoteItem'
+import {FaPlus} from 'react-icons/fa'
+
+
+
+const customStyles = {
+    content:{
+        width: '600px',
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%',
+        position: 'relative',
+    },
+}
+
+// Connecting the Modal to your html page:
+Modal.setAppElement('#root')
 
 function Ticket() {
+
+    // use the useState in order to toogle the modal:
+    const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [noteText, setNoteText] = useState('')
 
     const {ticket, isLoading, isSuccess, isError, message} = useSelector((state)=>state.tickets)
 
     const {notes, isLoading: notesIsLoading} = useSelector((state)=>state.notes)
 
+    console.log(notes)
     const params = useParams()
 
     const dispatch = useDispatch()
@@ -43,6 +68,16 @@ function Ticket() {
         toast.success('Ticket Closed')
         navigate('/tickets')
     }
+    // Create note submit:
+    const onNoteSubmit = (e) => {e.preventDefault()
+    dispatch(createNote({noteText, ticketId}))
+    closeModal()
+}
+
+    // Modal functions:
+    const openModal = () => setModalIsOpen(true)
+    const closeModal = () => setModalIsOpen(false)
+
 
     if(isLoading || notesIsLoading){
         return <Spinner /> 
@@ -70,6 +105,34 @@ function Ticket() {
         </div>
         <h2>Notes</h2>
     </header>
+
+    {/* Button for the Button */}
+    {ticket.status !== 'closed' && (
+        <button onClick={openModal} className="btn"><FaPlus/> Add Note</button>
+    )}
+
+    {/* This is the modal itself */}
+    <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel='Add Note'>
+        <h2>Add Note</h2>
+        <button className="btn-close" onClick={closeModal}>X</button>
+
+        <form onSubmit={onNoteSubmit}>
+            <div className="form-group">
+                <textarea
+                name="noteText"
+                id="noteText"
+                className="form-control"
+                placeholder="Note text"
+                value={noteText}
+                onChange={(e)=> setNoteText(e.target.value)}
+                ></textarea>
+            </div>
+            <div className="form-group">
+                <button className="btn" type="submit">Submit</button>
+            </div>
+
+        </form>
+    </Modal>
 
     {notes.map((note)=>(
         <NoteItem key={note._id} note={note} />

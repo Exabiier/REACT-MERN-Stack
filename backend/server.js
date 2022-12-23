@@ -1,3 +1,5 @@
+const path = require('path')
+
 // Common javascript syntacts 
 const express = require('express')
 
@@ -27,14 +29,31 @@ app.use(express.urlencoded({extened: false}))
 // get request in express:
 app.get('/', (req, res) => {
     // res.send('Hello')
-    res.status(200).json({message: 'Hello'})
-
+    res.status(200).json({message: 'Welcome to the the support desk API'})
 })
 
 // Routes
 app.use('/api/users', require('./routes/userRoutes'))
 
 app.use('/api/tickets', require('./routes/ticketRoutes'))
+
+// Server Frontend
+if(process.env.NODE_ENV === 'production'){
+    
+    // set build folder as static
+    app.use(express.static(path.join(__dirname, '../frontend/build')))
+
+    app.get('*', (req, res) => res.sendFile(__dirname, '../', 'frontend', 'build', 'index.html'))
+
+} else{
+
+// get request in express:
+app.get('/', (req, res) => {
+    // res.send('Hello')
+    res.status(200).json({message: 'Welcome to the the support desk API'})
+})
+
+}
 
 // Error handler:
 app.use(errorHandler)

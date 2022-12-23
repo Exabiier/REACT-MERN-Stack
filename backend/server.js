@@ -27,10 +27,10 @@ app.use(express.json())
 app.use(express.urlencoded({extened: false}))
 
 // get request in express:
-app.get('/', (req, res) => {
-    // res.send('Hello')
-    res.status(200).json({message: 'Welcome to the the support desk API'})
-})
+// app.get('/', (req, res) => {
+//     // res.send('Hello')
+//     res.status(200).json({message: 'Welcome to the the support desk API'})
+// })
 
 // Routes
 app.use('/api/users', require('./routes/userRoutes'))
